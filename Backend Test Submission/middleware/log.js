@@ -2,9 +2,9 @@ import axios from "axios";
 
 const LOG_API_URL = "http://20.244.56.144/evaluation-service/logs";
 const AUTH_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJiaGFyYWR3YWpiaW5naTU1NUBnbWFpbC5jb20iLCJleHAiOjE3NTI4MjcyNTEsImlhdCI6MTc1MjgyNjM1MSwiaXNzIjoiQWZmb3JkIE1lZGljYWwgVGVjaG5vbG9naWVzIFByaXZhdGUgTGltaXRlZCIsImp0aSI6ImRhMGZiMDNmLTEzOGMtNDBiZC04MmE1LTI0NzQ4YjhlNDljMSIsImxvY2FsZSI6ImVuLUlOIiwibmFtZSI6ImJoYXJhZHdhaiBiaW5naSIsInN1YiI6IjU2ZDNiZTc0LTdmY2EtNGFkZi04MTQxLTc0NDdkMzU0YTY4YSJ9LCJlbWFpbCI6ImJoYXJhZHdhamJpbmdpNTU1QGdtYWlsLmNvbSIsIm5hbWUiOiJiaGFyYWR3YWogYmluZ2kiLCJyb2xsTm8iOiIyMnZlMWEwNDcyIiwiYWNjZXNzQ29kZSI6Ik5OWkRHcSIsImNsaWVudElEIjoiNTZkM2JlNzQtN2ZjYS00YWRmLTgxNDEtNzQ0N2QzNTRhNjhhIiwiY2xpZW50U2VjcmV0IjoicEdod0hIa3RCQmd6YkNiZCJ9.LQ_fN_DQ34y_UY2xd6wqcdTujzBUPsnEL6cxSQB-RxY";
+  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiJiaGFyYWR3YWpiaW5naTU1NUBnbWFpbC5jb20iLCJleHAiOjE3NTI4Mjk4NzgsImlhdCI6MTc1MjgyODk3OCwiaXNzIjoiQWZmb3JkIE1lZGljYWwgVGVjaG5vbG9naWVzIFByaXZhdGUgTGltaXRlZCIsImp0aSI6IjhlMTE0OWMzLTdiYzEtNDc0ZC1iOTUzLTFkNGUxYTA3YzI5OCIsImxvY2FsZSI6ImVuLUlOIiwibmFtZSI6ImJoYXJhZHdhaiBiaW5naSIsInN1YiI6IjU2ZDNiZTc0LTdmY2EtNGFkZi04MTQxLTc0NDdkMzU0YTY4YSJ9LCJlbWFpbCI6ImJoYXJhZHdhamJpbmdpNTU1QGdtYWlsLmNvbSIsIm5hbWUiOiJiaGFyYWR3YWogYmluZ2kiLCJyb2xsTm8iOiIyMnZlMWEwNDcyIiwiYWNjZXNzQ29kZSI6Ik5OWkRHcSIsImNsaWVudElEIjoiNTZkM2JlNzQtN2ZjYS00YWRmLTgxNDEtNzQ0N2QzNTRhNjhhIiwiY2xpZW50U2VjcmV0IjoicEdod0hIa3RCQmd6YkNiZCJ9.k10qFyGZMLiCvrOEMrxH5_RoUbMg6BO4ORixjU267z0"; // Full token
 
-const allowedStacks = ["backend", "frontend"];
+const allowedStacks = ["backend"];
 const allowedLevels = ["debug", "info", "warn", "error", "fatal"];
 const allowedPackages = {
   backend: [
@@ -32,15 +32,17 @@ export const logMessage = async ({ stack, level, packageName, message }) => {
       throw new Error(`Invalid package for stack "${stack}"`);
     }
 
+    const trimmedMessage = message.slice(0, 48); // max 48 chars
+
     const body = {
       stack,
       level,
       package: packageName,
-      message,
+      message: trimmedMessage,
     };
 
     const headers = {
-      Authorization: `Bearer ${AUTH_TOKEN}`,
+      Authorization: AUTH_TOKEN,
       "Content-Type": "application/json",
     };
 
